@@ -44,10 +44,17 @@ void function BT( entity titan )
                                 titan.SetTitle( "BT-7274" )
                               entity soul = titan.GetTitanSoul()
                               entity player = GetPetTitanOwner( titan )
-                              player.SetTitle( "BT-7274" )
-                              if ( IsValid( soul ) )
+                              if (IsValid( soul ))
+                              {
+                              soul.soul.skipDoomState = true // anti crash if auto titan has a execution done on it
+                              }
+                              
+                              if (IsValid( soul ) && IsValid( player )) // titan doesn't have a player and doesn't need execution refs
                               {
  		              GivePassive( soul, ePassives.PAS_ENHANCED_TITAN_AI )
+                              soul.soul.skipDoomState = false
+                              GivePassive( soul, ePassives.PAS_AUTO_EJECT )
+                              player.SetTitle( "BT-7274" )
                               
                               if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_SHIELD ) )
 				{
@@ -71,7 +78,9 @@ void function BT( entity titan )
 					titan.SetSkin(2)
 				}
 
-                                soul.soul.skipDoomState = true
+                                
+				if( TitanEjectIsDisabled() )
+					soul.soul.skipDoomState = true
                               }
                         break;
         }
