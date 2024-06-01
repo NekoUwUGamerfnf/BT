@@ -1,0 +1,17 @@
+{
+	"Name" : "BT-7274",
+	"Description" : "vanguard titan",
+	"Version": "1.0.0",
+	"LoadPriority": 0,
+	"RequiredOnClient": false,
+
+	"Scripts": [
+		{
+			"Path": "bt.nut",
+			"RunOn": "SERVER && MP",
+                        "ServerCallback": {
+                        "After": "bt_init"
+			}
+		}
+	]
+}
