@@ -124,11 +124,13 @@ void function bop( entity player )
 
 void function OnPilotBecomesTitan( entity player, entity titan )
 {
+        if( IsValid(player) && player.GetModelName() == $"models/titans/buddy/titan_buddy.mdl" )
 	bop( player )
 }
 
 void function OnTitanBecomesPilot( entity player, entity titan )
 {
+        if( IsValid(titan) && titan.GetModelName() == $"models/titans/buddy/titan_buddy.mdl" )
 	balls( titan )
 }
 
@@ -152,8 +154,6 @@ void function BT( entity titan )
                               {
                                titan.SetModel($"models/titans/buddy/titan_buddy.mdl")
                                   StartParticleEffectOnEntity( titan, GetParticleSystemIndex( $"P_BT_eye_SM" ), FX_PATTACH_POINT_FOLLOW, titan.LookupAttachment( "EYEGLOW" ) )
-                                titan.TakeWeaponNow( weapons[0].GetWeaponClassName() )
-                                titan.GiveWeapon("mp_titanweapon_xo16_shorty")
 				titan.TakeOffhandWeapon( OFFHAND_INVENTORY )
                                 titan.TakeOffhandWeapon( OFFHAND_ANTIRODEO )
                                 titan.GiveOffhandWeapon( "mp_titanability_smoke", OFFHAND_ANTIRODEO )
