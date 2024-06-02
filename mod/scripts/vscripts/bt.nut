@@ -3,9 +3,46 @@ global function bt_init
 
 void function bt_init() {
 #if SERVER
+            	PrecacheParticleSystem( $"P_BT_eye_SM" )
+    	PrecacheModel( $"models/titans/buddy/titan_buddy.mdl" )
 	AddSpawnCallback( "npc_titan", BT )
+		AddCallback_OnPilotBecomesTitan( OnPilotBecomesTitan )
+		AddCallback_OnTitanBecomesPilot( OnTitanBecomesPilot )
 #endif
 }
+
+void function balls( entity titan )
+{
+	#if SERVER
+	if( IsValid(titan) && titan.GetModelName() == $"models/titans/buddy/titan_buddy.mdl" )
+                                titan.SetAISettings( "npc_titan_vanguard" )
+                                titan.SetBehaviorSelector( "behavior_titan_long_range" )
+                                titan.kv.alwaysalert = 0
+                                titan.DisableNPCMoveFlag( NPCMF_WALK_NONCOMBAT )
+                                titan.EnableNPCMoveFlag( NPCMF_WALK_NONCOMBAT )
+                                titan.SetTitle( "BT-7274" )
+	#endif
+}
+
+void function bop( entity player )
+{
+	#if SERVER
+	if( IsValid(player) && player.GetModelName() == $"models/titans/buddy/titan_buddy.mdl" )
+		player.SetTitle( "BT-7274" )
+	#endif
+}
+
+void function OnPilotBecomesTitan( entity player, entity titan )
+{
+	bop( player )
+}
+
+void function OnTitanBecomesPilot( entity player, entity titan )
+{
+	balls( titan )
+}
+
+
 
 #if SERVER
 void function BT( entity titan )
@@ -19,7 +56,11 @@ void function BT( entity titan )
 	string attackerType = GetTitanCharacterName( titan )
 	switch ( attackerType )
 	    {
-		case "vanguard":  titan.SetModel($"models/titans/buddy/titan_buddy.mdl")
+		case "vanguard": entity soul = titan.GetTitanSoul()
+                              entity player = GetPetTitanOwner( titan )
+                              if (IsValid( soul ) && IsValid( player )) // titan doesn't have a player and doesn't need execution refs
+                              {
+                               titan.SetModel($"models/titans/buddy/titan_buddy.mdl")
                                   StartParticleEffectOnEntity( titan, GetParticleSystemIndex( $"P_BT_eye_SM" ), FX_PATTACH_POINT_FOLLOW, titan.LookupAttachment( "EYEGLOW" ) )
                                 titan.TakeWeaponNow( weapons[0].GetWeaponClassName() )
                                 titan.GiveWeapon("mp_titanweapon_xo16_shorty")
@@ -44,17 +85,9 @@ void function BT( entity titan )
                                 titan.SetTitle( "BT-7274" )
                               entity soul = titan.GetTitanSoul()
                               entity player = GetPetTitanOwner( titan )
-                              if (IsValid( soul ))
-                              {
-                              soul.soul.skipDoomState = true // anti crash if auto titan has a execution done on it
-                              }
-                              
-                              if (IsValid( soul ) && IsValid( player )) // titan doesn't have a player and doesn't need execution refs
-                              {
  		              GivePassive( soul, ePassives.PAS_ENHANCED_TITAN_AI )
                               soul.soul.skipDoomState = false
                               GivePassive( soul, ePassives.PAS_AUTO_EJECT )
-                              player.SetTitle( "BT-7274" )
                               
                               if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_SHIELD ) )
 				{
@@ -82,7 +115,6 @@ void function BT( entity titan )
 				if( TitanEjectIsDisabled() )
 					soul.soul.skipDoomState = true
                               }
-                        break;
         }
 }
 #endif
