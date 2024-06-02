@@ -11,6 +11,69 @@ void function bt_init() {
 #endif
 }
 
+void function um( entity titan )
+{
+	while( true )
+	{
+		loop( titan )
+		WaitFrame()
+	}
+}
+
+void function loop( entity titan )
+{
+                                titan.SetAISettings( "npc_titan_vanguard" )
+                                titan.SetBehaviorSelector( "behavior_titan_long_range" )
+                                titan.kv.alwaysalert = 0
+                                titan.DisableNPCMoveFlag( NPCMF_WALK_NONCOMBAT )
+                                titan.EnableNPCMoveFlag( NPCMF_WALK_NONCOMBAT )
+}
+
+bool function CheckVoiceline( entity titan )
+{
+	#if SERVER
+	if( IsValid(titan) )
+	{
+		entity soul = titan.GetTitanSoul()
+		vector origin = titan.GetOrigin()
+		//Voicelines
+		if(IsValid(soul) && titan.GetModelName() == $"models/titans/buddy/titan_buddy.mdl")
+		{
+			if( soul.IsEjecting() )
+			{
+				EmitSoundAtPosition( TEAM_UNASSIGNED, origin, "diag_sp_extra_GB101_99_01_mcor_bt" )
+				return false
+			}
+			return true
+		}	
+	}
+	#endif
+	return false
+}
+
+void function EjectingVoiceline( entity titan )
+{
+	#if SERVER
+	if( IsValid(titan) )
+	{
+		entity player = GetPetTitanOwner(titan)
+		//Voicelines
+		if( titan.GetModelName() == $"models/titans/buddy/titan_buddy.mdl")
+		{
+			entity soul = titan.GetTitanSoul()
+			soul.EndSignal( "OnDestroy" )
+			player.WaitSignal( "TitanEjectionStarted" )
+			if( IsValid(player) )
+			{
+				vector origin = player.GetOrigin()
+				EmitSoundAtPosition( TEAM_UNASSIGNED, origin, "diag_sp_extra_GB101_99_01_mcor_bt" )
+			}
+		}
+	}
+	#endif
+}
+
+
 void function balls( entity titan )
 {
 	#if SERVER
@@ -21,6 +84,31 @@ void function balls( entity titan )
                                 titan.DisableNPCMoveFlag( NPCMF_WALK_NONCOMBAT )
                                 titan.EnableNPCMoveFlag( NPCMF_WALK_NONCOMBAT )
                                 titan.SetTitle( "BT-7274" )
+                                thread CheckVoiceline( titan )
+                                thread EjectingVoiceline( titan )
+        entity soul = titan.GetTitanSoul()
+                                if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_SHIELD ) )
+				{
+					soul.soul.titanLoadout.titanExecution = "execution_bt_flip"
+					titan.SetSkin(1)
+				}
+				if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_DOOM) )
+				{
+					soul.soul.titanLoadout.titanExecution = "execution_bt_pilotrip"
+					titan.SetSkin(1)
+				}
+				if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_REARM) )
+				{
+					soul.soul.titanLoadout.titanExecution = "execution_bt_kickshoot"
+					titan.SetSkin(0)
+				}
+				if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_COREMETER ) )
+				{
+					TakePassive( soul, ePassives.PAS_VANGUARD_COREMETER )
+					soul.soul.titanLoadout.titanExecution = "execution_bt_kickshoot"
+					titan.SetSkin(2)
+				}
+
 	#endif
 }
 
@@ -28,7 +116,7 @@ void function bop( entity player )
 {
 	#if SERVER
 	if( IsValid(player) && player.GetModelName() == $"models/titans/buddy/titan_buddy.mdl" )
-		player.SetTitle( "BT-7274" )
+		                player.SetTitle( "BT-7274" )
 	#endif
 }
 
