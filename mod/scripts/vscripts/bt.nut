@@ -9,6 +9,11 @@ void function bt_init() {
 		AddCallback_OnPilotBecomesTitan( OnPilotBecomesTitan )
 		AddCallback_OnTitanBecomesPilot( OnTitanBecomesPilot )
 #endif
+
+#if MP
+            	PrecacheParticleSystem( $"P_BT_eye_SM" )
+    	PrecacheModel( $"models/titans/buddy/titan_buddy.mdl" )
+#endif
 }
 
 void function um( entity titan )
@@ -86,8 +91,8 @@ void function balls( entity titan )
                                 titan.EnableNPCMoveFlag( NPCMF_WALK_NONCOMBAT )
                                 titan.SetTitle( "BT-7274" )
                                 thread um( titan )
-                                thread CheckVoiceline( titan )
-                                thread EjectingVoiceline( titan )
+                                //thread CheckVoiceline( titan )
+                                //thread EjectingVoiceline( titan )
         entity soul = titan.GetTitanSoul()
                                 if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_SHIELD ) )
 				{
