@@ -1,0 +1,17 @@
+{
+	"Name" : "Frontier-BTT",
+	"Description" : "for Servers",
+	"Version": "1.1.3",
+	"LoadPriority": 12,
+	"RequiredOnClient": false,
+
+	"Scripts": [
+		{
+			"Path": "frontierbtt.nut",
+			"RunOn": "SERVER && MP",
+                        "ServerCallback": {
+                        "After": "frontierbtt_init"
+			}
+		}
+	]
+}
