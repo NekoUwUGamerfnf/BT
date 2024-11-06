@@ -3,11 +3,14 @@ global function bt_init
 
 void function bt_init() {
 #if SERVER
+	RegisterSignal( "fastball_start_throw" )
+	RegisterSignal( "fastball_release" )
             	PrecacheParticleSystem( $"P_BT_eye_SM" )
     	PrecacheModel( $"models/titans/buddy/titan_buddy.mdl" )
 	AddSpawnCallback( "npc_titan", BT )
 		AddCallback_OnPilotBecomesTitan( OnPilotBecomesTitan )
 		AddCallback_OnTitanBecomesPilot( OnTitanBecomesPilot )
+                AddClientCommandCallback( "fastball", playerfastball )
 #endif
 }
 
@@ -74,6 +77,106 @@ void function EjectingVoiceline( entity titan )
 	#endif
 }
 
+bool function playerfastball( entity player, array<string> args )
+{
+#if SERVER
+if( IsValid( player.GetPetTitan() ) )
+{
+entity titan = player.GetPetTitan()
+if( titan.GetModelName() == $"models/titans/buddy/titan_buddy.mdl")
+thread distancefastball( player, titan )
+}
+return true
+#endif
+}
+
+void function distancefastball( entity player, entity titan )
+{
+if( IsValid( player ) && Distance( player.GetOrigin(), titan.GetOrigin() ) < 250 )
+{
+vector angles = player.EyeAngles()
+angles.x = 0
+titan.SetAngles( angles )
+thread PlayAnim( titan, "bt_beacon_fastball_throw_end" )
+thread fastballforplayertitan( player, titan )
+}
+}
+
+void function fastballforplayertitan( entity player, entity titan ) // copyed from _gamemode_fastball_intro.gunt file in northstar.custom
+{
+    player.EndSignal( "OnDestroy" )
+    titan.EndSignal( "OnDestroy" )
+    
+    if ( IsAlive( player ) )
+        //player.Die() // kill player if they're alive so there's no issues with that
+        
+
+    player.EndSignal( "OnDeath" )
+    titan.EndSignal( "OnDeath" )
+        
+    OnThreadEnd( function() : ( player )
+    {
+        if ( IsValid( player ) )
+        {
+            RemoveCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING )
+            player.ClearParent()
+            ClearPlayerAnimViewEntity( player )
+            player.DeployWeapon()
+            player.PlayerCone_Disable()
+            player.ClearInvulnerable()
+            player.kv.VisibilityFlags = ENTITY_VISIBLE_TO_EVERYONE // restore visibility
+        }
+    })
+    
+    FirstPersonSequenceStruct throwSequence
+    throwSequence.attachment = "REF"
+    throwSequence.useAnimatedRefAttachment = true
+    throwSequence.hideProxy = true
+    throwSequence.viewConeFunction = ViewConeFastball // this seemingly does not trigger for some reason
+    throwSequence.firstPersonAnim = "ptpov_beacon_fastball_throw_end"
+    // mp models seemingly have no 3p animation for this
+    //throwSequence.firstPersonBlendOutTime = 0.0
+    //throwSequence.teleport = true
+    //throwSequence.setInitialTime = Time()
+    
+
+    // respawn the player
+        //player.SetOrigin( titan.GetOrigin() )
+    player.kv.VisibilityFlags = 0 // better than .Hide(), hides weapons and such
+    player.SetInvulnerable() // in deadly ground we die without this lol
+    player.HolsterWeapon()
+    
+    // hide hud, fade screen out from black
+    //AddCinematicFlag( player, CE_FLAG_CLASSIC_MP_SPAWNING )
+    //ScreenFadeFromBlack( player, 0.5, 0.5 )
+    
+    // start fp sequence
+    thread FirstPersonSequence( throwSequence, player, titan )
+    
+    // manually do this because i can't get viewconefastball to work
+    player.PlayerCone_FromAnim()
+    player.PlayerCone_SetMinYaw( -50 )
+    player.PlayerCone_SetMaxYaw( 25 )
+    player.PlayerCone_SetMinPitch( -15 )
+    player.PlayerCone_SetMaxPitch( 15 )
+    
+    titan.WaitSignal( "fastball_start_throw" )
+    // lock in their final angles at this point
+    vector throwVel = AnglesToForward( player.EyeAngles() ) * 950
+    throwVel.z = 1575.0
+    
+    // wait for it to finish
+    titan.WaitSignal( "fastball_release" )
+    
+    if ( player.IsInputCommandHeld( IN_JUMP ) )
+        throwVel.z = 1750.0
+    
+    // have to correct this manually here since due to no 3p animation our position isn't set right during this sequence
+    player.SetOrigin( titan.GetAttachmentOrigin( titan.LookupAttachment( "FASTBALL_R" ) ) )
+    player.SetVelocity( throwVel )
+    
+    //TryGameModeAnnouncement( player )
+}
 
 void function balls( entity titan )
 {
