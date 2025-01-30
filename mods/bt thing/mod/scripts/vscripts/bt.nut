@@ -24,6 +24,37 @@ void function um( entity titan )
 	}
 }
 
+void function executionthing( entity player )
+{
+	while( true )
+	{
+                if( IsValid(player) && player.GetModelName() == $"models/titans/buddy/titan_buddy.mdl" )
+		randomexecution( player )
+		WaitFrame()
+	}
+}
+
+void function randomexecution( entity player )
+{
+entity soul = player.GetTitanSoul()
+if(IsValid(soul) && player.GetModelName() == $"models/titans/buddy/titan_buddy.mdl")
+player.Signal( "OnSyncedMelee" )
+int random_exec = 1
+                        random_exec = RandomIntRange( 1, 4 )
+			if ( random_exec == 1 )
+                        {
+                        soul.soul.titanLoadout.titanExecution = "execution_bt_flip"
+                        }
+			if ( random_exec == 2 )
+                        {
+                        soul.soul.titanLoadout.titanExecution = "execution_bt_pilotrip"
+                        }
+                        if ( random_exec == 3 )
+                        {
+                        soul.soul.titanLoadout.titanExecution = "execution_bt_kickshoot"
+                        }
+}
+
 void function loop( entity titan )
 {
                                 titan.SetAISettings( "npc_titan_vanguard" )
@@ -195,23 +226,23 @@ void function balls( entity titan )
         entity soul = titan.GetTitanSoul()
                                 if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_SHIELD ) )
 				{
-					soul.soul.titanLoadout.titanExecution = "execution_bt_flip"
+					//soul.soul.titanLoadout.titanExecution = "execution_bt_flip"
 					titan.SetSkin(1)
 				}
 				if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_DOOM) )
 				{
-					soul.soul.titanLoadout.titanExecution = "execution_bt_pilotrip"
+					//soul.soul.titanLoadout.titanExecution = "execution_bt_pilotrip"
 					titan.SetSkin(1)
 				}
 				if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_REARM) )
 				{
-					soul.soul.titanLoadout.titanExecution = "execution_bt_kickshoot"
+					//soul.soul.titanLoadout.titanExecution = "execution_bt_kickshoot"
 					titan.SetSkin(0)
 				}
 				if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_COREMETER ) )
 				{
 					TakePassive( soul, ePassives.PAS_VANGUARD_COREMETER )
-					soul.soul.titanLoadout.titanExecution = "execution_bt_kickshoot"
+					//soul.soul.titanLoadout.titanExecution = "execution_bt_kickshoot"
 					titan.SetSkin(2)
 				}
 
@@ -223,6 +254,7 @@ void function bop( entity player )
 	#if SERVER
 	if( IsValid(player) && player.GetModelName() == $"models/titans/buddy/titan_buddy.mdl" )
 		                player.SetTitle( "BT-7274" )
+        thread executionthing( player )
 	#endif
 }
 
@@ -283,26 +315,39 @@ void function BT( entity titan )
                               soul.soul.skipDoomState = false
                               GivePassive( soul, ePassives.PAS_AUTO_EJECT )
                               GivePassive( soul, ePassives.PAS_MOBILITY_DASH_CAPACITY )
-                              
+                        int random_exec = 1
+                        random_exec = RandomIntRange( 1, 4 )
+			if ( random_exec == 1 )
+                        {
+                        soul.soul.titanLoadout.titanExecution = "execution_bt_flip"
+                        }
+			if ( random_exec == 2 )
+                        {
+                        soul.soul.titanLoadout.titanExecution = "execution_bt_pilotrip"
+                        }
+                        if ( random_exec == 3 )
+                        {
+                        soul.soul.titanLoadout.titanExecution = "execution_bt_kickshoot"
+                        }
                               if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_SHIELD ) )
 				{
-					soul.soul.titanLoadout.titanExecution = "execution_bt_flip"
+					//soul.soul.titanLoadout.titanExecution = "execution_bt"
 					titan.SetSkin(1)
 				}
 				if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_DOOM) )
 				{
-					soul.soul.titanLoadout.titanExecution = "execution_bt_pilotrip"
+					//soul.soul.titanLoadout.titanExecution = "execution_bt"
 					titan.SetSkin(1)
 				}
 				if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_REARM) )
 				{
-					soul.soul.titanLoadout.titanExecution = "execution_bt_kickshoot"
+					//soul.soul.titanLoadout.titanExecution = "execution_bt"
 					titan.SetSkin(0)
 				}
 				if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_COREMETER ) )
 				{
 					TakePassive( soul, ePassives.PAS_VANGUARD_COREMETER )
-					soul.soul.titanLoadout.titanExecution = "execution_bt_kickshoot"
+					//soul.soul.titanLoadout.titanExecution = "execution_bt"
 					titan.SetSkin(2)
 				}
 
