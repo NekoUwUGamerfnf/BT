@@ -43,14 +43,17 @@ int random_exec = 1
                         random_exec = RandomIntRange( 1, 4 )
 			if ( random_exec == 1 )
                         {
+                        if(IsValid(soul))
                         soul.soul.titanLoadout.titanExecution = "execution_bt_flip"
                         }
 			if ( random_exec == 2 )
                         {
+                        if(IsValid(soul))
                         soul.soul.titanLoadout.titanExecution = "execution_bt_pilotrip"
                         }
                         if ( random_exec == 3 )
                         {
+                        if(IsValid(soul))
                         soul.soul.titanLoadout.titanExecution = "execution_bt_kickshoot"
                         }
 }
@@ -315,20 +318,6 @@ void function BT( entity titan )
                               soul.soul.skipDoomState = false
                               GivePassive( soul, ePassives.PAS_AUTO_EJECT )
                               GivePassive( soul, ePassives.PAS_MOBILITY_DASH_CAPACITY )
-                        int random_exec = 1
-                        random_exec = RandomIntRange( 1, 4 )
-			if ( random_exec == 1 )
-                        {
-                        soul.soul.titanLoadout.titanExecution = "execution_bt_flip"
-                        }
-			if ( random_exec == 2 )
-                        {
-                        soul.soul.titanLoadout.titanExecution = "execution_bt_pilotrip"
-                        }
-                        if ( random_exec == 3 )
-                        {
-                        soul.soul.titanLoadout.titanExecution = "execution_bt_kickshoot"
-                        }
                               if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_SHIELD ) )
 				{
 					//soul.soul.titanLoadout.titanExecution = "execution_bt"
