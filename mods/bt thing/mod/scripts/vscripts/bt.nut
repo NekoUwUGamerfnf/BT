@@ -81,35 +81,7 @@ void function fixifteamswap( entity player )
 {
 if( IsValid(player) && player.GetModelName() == $"models/titans/medium/titan_medium_vanguard.mdl" )
 player.SetModel($"models/titans/buddy/titan_buddy.mdl")
-entity soul = player.GetTitanSoul()
-if ( IsValid(soul))
-                              player.SetSkin(2)
-                              if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_SHIELD ) )
-				{
-                                        if( IsValid(player))
-					//soul.soul.titanLoadout.titanExecution = "execution_bt"
-					player.SetSkin(1)
-				}
-				if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_DOOM) )
-				{
-                                        if( IsValid(player))
-					//soul.soul.titanLoadout.titanExecution = "execution_bt"
-					player.SetSkin(1)
-				}
-				if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_REARM) )
-				{
-                                        if( IsValid(player))
-					//soul.soul.titanLoadout.titanExecution = "execution_bt"
-					player.SetSkin(0)
-				}
-/*
-				if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_COREMETER ) )
-				{
-					TakePassive( soul, ePassives.PAS_VANGUARD_COREMETER )
-					//soul.soul.titanLoadout.titanExecution = "execution_bt"
-					titan.SetSkin(2)
-				}
-*/
+player.SetSkin(1)
 }
 
 bool function CheckVoiceline( entity titan )
