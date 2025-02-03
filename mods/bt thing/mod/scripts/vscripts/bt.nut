@@ -81,6 +81,7 @@ void function fixifteamswap( entity player )
 {
 if( IsValid(player) && player.GetModelName() == $"models/titans/medium/titan_medium_vanguard.mdl" )
 player.SetModel($"models/titans/buddy/titan_buddy.mdl")
+player.SetTitle( "BT-7274" )
 player.SetSkin(1)
 }
 
