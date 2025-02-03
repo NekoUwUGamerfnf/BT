@@ -83,7 +83,6 @@ if( IsValid(player) && player.GetModelName() == $"models/titans/medium/titan_med
 player.SetModel($"models/titans/buddy/titan_buddy.mdl")
 entity soul = player.GetTitanSoul()
 if ( IsValid(soul))
-                              TakePassive( soul, ePassives.PAS_VANGUARD_COREMETER )
                               player.SetSkin(2)
                               if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_SHIELD ) )
 				{
