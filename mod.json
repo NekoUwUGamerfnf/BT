@@ -1,7 +1,7 @@
 {
 	"Name" : "BT-7274",
 	"Description" : "vanguard titan",
-	"Version": "1.1.8",
+	"Version": "1.1.9",
 	"LoadPriority": 12,
 	"RequiredOnClient": false,
 

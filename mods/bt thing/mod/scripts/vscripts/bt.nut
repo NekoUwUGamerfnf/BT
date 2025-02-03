@@ -24,6 +24,16 @@ void function um( entity titan )
 	}
 }
 
+void function fixteamswapthing( entity player )
+{
+	while( true )
+	{
+                if( IsValid(player) && player.GetModelName() == $"models/titans/medium/titan_medium_vanguard.mdl" )
+		fixifteamswap( player )
+		WaitFrame()
+	}
+}
+
 void function executionthing( entity player )
 {
 	while( true )
@@ -65,6 +75,38 @@ void function loop( entity titan )
                                 titan.kv.alwaysalert = 0
                                 titan.DisableNPCMoveFlag( NPCMF_WALK_NONCOMBAT )
                                 titan.EnableNPCMoveFlag( NPCMF_WALK_NONCOMBAT )
+}
+
+void function fixifteamswap( entity player )
+{
+if( IsValid(player) && player.GetModelName() == $"models/titans/medium/titan_medium_vanguard.mdl" )
+player.SetModel($"models/titans/buddy/titan_buddy.mdl")
+entity soul = player.GetTitanSoul()
+                              TakePassive( soul, ePassives.PAS_VANGUARD_COREMETER )
+                              player.SetSkin(2)
+                              if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_SHIELD ) )
+				{
+					//soul.soul.titanLoadout.titanExecution = "execution_bt"
+					player.SetSkin(1)
+				}
+				if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_DOOM) )
+				{
+					//soul.soul.titanLoadout.titanExecution = "execution_bt"
+					player.SetSkin(1)
+				}
+				if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_REARM) )
+				{
+					//soul.soul.titanLoadout.titanExecution = "execution_bt"
+					player.SetSkin(0)
+				}
+/*
+				if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_COREMETER ) )
+				{
+					TakePassive( soul, ePassives.PAS_VANGUARD_COREMETER )
+					//soul.soul.titanLoadout.titanExecution = "execution_bt"
+					titan.SetSkin(2)
+				}
+*/
 }
 
 bool function CheckVoiceline( entity titan )
@@ -227,27 +269,31 @@ void function balls( entity titan )
                                 //thread CheckVoiceline( titan )
                                 //thread EjectingVoiceline( titan )
         entity soul = titan.GetTitanSoul()
-                                if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_SHIELD ) )
+                              TakePassive( soul, ePassives.PAS_VANGUARD_COREMETER )
+                              titan.SetSkin(2)
+                              if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_SHIELD ) )
 				{
-					//soul.soul.titanLoadout.titanExecution = "execution_bt_flip"
+					//soul.soul.titanLoadout.titanExecution = "execution_bt"
 					titan.SetSkin(1)
 				}
 				if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_DOOM) )
 				{
-					//soul.soul.titanLoadout.titanExecution = "execution_bt_pilotrip"
+					//soul.soul.titanLoadout.titanExecution = "execution_bt"
 					titan.SetSkin(1)
 				}
 				if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_REARM) )
 				{
-					//soul.soul.titanLoadout.titanExecution = "execution_bt_kickshoot"
+					//soul.soul.titanLoadout.titanExecution = "execution_bt"
 					titan.SetSkin(0)
 				}
+/*
 				if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_COREMETER ) )
 				{
 					TakePassive( soul, ePassives.PAS_VANGUARD_COREMETER )
-					//soul.soul.titanLoadout.titanExecution = "execution_bt_kickshoot"
+					//soul.soul.titanLoadout.titanExecution = "execution_bt"
 					titan.SetSkin(2)
 				}
+*/
 
 	#endif
 }
@@ -258,6 +304,7 @@ void function bop( entity player )
 	if( IsValid(player) && player.GetModelName() == $"models/titans/buddy/titan_buddy.mdl" )
 		                player.SetTitle( "BT-7274" )
         thread executionthing( player )
+        thread fixteamswapthing( player )
 	#endif
 }
 
@@ -318,6 +365,8 @@ void function BT( entity titan )
                               soul.soul.skipDoomState = false
                               GivePassive( soul, ePassives.PAS_AUTO_EJECT )
                               GivePassive( soul, ePassives.PAS_MOBILITY_DASH_CAPACITY )
+                              TakePassive( soul, ePassives.PAS_VANGUARD_COREMETER )
+                              titan.SetSkin(2)
                               if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_SHIELD ) )
 				{
 					//soul.soul.titanLoadout.titanExecution = "execution_bt"
@@ -333,13 +382,14 @@ void function BT( entity titan )
 					//soul.soul.titanLoadout.titanExecution = "execution_bt"
 					titan.SetSkin(0)
 				}
+/*
 				if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_COREMETER ) )
 				{
 					TakePassive( soul, ePassives.PAS_VANGUARD_COREMETER )
 					//soul.soul.titanLoadout.titanExecution = "execution_bt"
 					titan.SetSkin(2)
 				}
-
+*/ 
                                 
 				if( TitanEjectIsDisabled() )
 					soul.soul.skipDoomState = true
