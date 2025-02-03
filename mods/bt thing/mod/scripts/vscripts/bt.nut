@@ -82,20 +82,24 @@ void function fixifteamswap( entity player )
 if( IsValid(player) && player.GetModelName() == $"models/titans/medium/titan_medium_vanguard.mdl" )
 player.SetModel($"models/titans/buddy/titan_buddy.mdl")
 entity soul = player.GetTitanSoul()
+if ( IsValid(soul))
                               TakePassive( soul, ePassives.PAS_VANGUARD_COREMETER )
                               player.SetSkin(2)
                               if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_SHIELD ) )
 				{
+                                        if( IsValid(player))
 					//soul.soul.titanLoadout.titanExecution = "execution_bt"
 					player.SetSkin(1)
 				}
 				if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_DOOM) )
 				{
+                                        if( IsValid(player))
 					//soul.soul.titanLoadout.titanExecution = "execution_bt"
 					player.SetSkin(1)
 				}
 				if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_REARM) )
 				{
+                                        if( IsValid(player))
 					//soul.soul.titanLoadout.titanExecution = "execution_bt"
 					player.SetSkin(0)
 				}
@@ -269,6 +273,7 @@ void function balls( entity titan )
                                 //thread CheckVoiceline( titan )
                                 //thread EjectingVoiceline( titan )
         entity soul = titan.GetTitanSoul()
+        if( IsValid(soul))
                               TakePassive( soul, ePassives.PAS_VANGUARD_COREMETER )
                               titan.SetSkin(2)
                               if( SoulHasPassive( soul, ePassives.PAS_VANGUARD_SHIELD ) )
@@ -361,6 +366,7 @@ void function BT( entity titan )
                                 thread um( titan )
                               entity soul = titan.GetTitanSoul()
                               entity player = GetPetTitanOwner( titan )
+                              if( IsValid(soul))
  		              GivePassive( soul, ePassives.PAS_ENHANCED_TITAN_AI )
                               soul.soul.skipDoomState = false
                               GivePassive( soul, ePassives.PAS_AUTO_EJECT )
