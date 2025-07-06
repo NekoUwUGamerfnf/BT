@@ -2,7 +2,7 @@
 	"Name" : "Neko's BT-7274",
 	"Description" : "vanguard titan",
 	"Version": "1.2.2",
-	"LoadPriority": 12,
+	"LoadPriority": 20,
 	"RequiredOnClient": false,
 
 	"Scripts": [
